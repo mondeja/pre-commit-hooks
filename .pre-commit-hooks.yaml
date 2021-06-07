@@ -2,5 +2,5 @@
   name: wavelint
   entry: wavelint-hook
   description: Lints WAVE files
-  files: \.po$
+  files: \.wav$
   language: python
