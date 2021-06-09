@@ -22,7 +22,7 @@ durations...
 - `-max-duration=TIME` (*float*): Maximum duration in seconds that your
  sounds must have.
  
-### **`dev-extras-require`**
+### **`dev-extras-required`**
 
 > - Doesn't support `setup.py` files. Please, [migrate your setup configuration
  to `setup.cfg` format][setup-py-upgrade-link].

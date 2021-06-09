@@ -1,4 +1,4 @@
-"""Tests for 'dev-extras-require' hook."""
+"""Tests for 'dev-extras-required' hook."""
 
 import contextlib
 import io
