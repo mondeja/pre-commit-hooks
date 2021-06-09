@@ -5,6 +5,15 @@
 [![License][license-image]][license-link]
 [![Tests][tests-image]][tests-link]
 
+## Example configuration
+
+```yaml
+- repo: https://github.com/mondeja/pre-commit-hooks
+  rev: v1.0.0
+  hooks:
+    - id: dev-extras-required
+```
+
 ## Hooks
 
 ### **`wavelint`**
