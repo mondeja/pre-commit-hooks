@@ -38,8 +38,8 @@ one, it will be added to your development extra dependencies group. If your
 development group is not defined, it will be created.
 
 This is useful if you want to execute `python -m pip install -e .[dev]` to
-install all the optional requirements of the package, so if you add new
-requirements to other groups, it would be added to development requirements.
+install all the optional requirements of the package, so if you add a new
+requirement to another groups, it will be added to development requirements.
 
 #### Parameters
 
