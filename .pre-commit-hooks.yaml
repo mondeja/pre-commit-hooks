@@ -4,3 +4,9 @@
   description: Lints WAVE files
   files: \.wav$
   language: python
+- id: dev-extras-required
+  name: dev-extras-required
+  entry: dev-extras-required-hook
+  description: Check if your development dependencies contains all other extras requirements
+  files: '(setup\.cfg)|(pyproject\.toml)'
+  language: python

@@ -1,8 +1,9 @@
 """Script to check that WAVE files fits a set of requirements."""
 
+import argparse
 import sys
-
 import wave
+
 
 def wavelint(
     filenames,
@@ -17,39 +18,42 @@ def wavelint(
     quiet=False,
 ):
     """Check that a set of WAVE filenames fits some requirements.
-    
+
     Parameters
     ----------
-    
+
     filenames : list
       Set of file names to check.
-    
+
     nchannels : int, optional
       Mandatory number of channels for the files. Use ``1`` if you
       want to assert that you are working with mono files, or whatever
       other number of channels for stereo files.
-    
+
     sample_width : int, optional
       Number of bytes as size for sample width.
-    
+
     frame_rate : int, optional
       Sampling frecuency, in Hz, that audio files must have .
-    
+
     nframes : int, optional
       Number of frames that audio files must have.
-    
+
     compression_type : str, optional
       Compression type that should have all audio files.
-    
+
     compression_name : str, optional
       Name of the compression that should have all audio files.
-    
+
     max_duration : float, optional
       Maximum duration in seconds that can have the files.
-    
+
     min_duration : float, optional
       Minimum duration in seconds that can have the files.
-    
+
+    quiet : bool, optional
+      Enabled, don't print output to stderr when a mismatch is found.
+
     Returns
     -------
 
@@ -59,7 +63,7 @@ def wavelint(
 
     for filename in filenames:
         with wave.open(filename, "r") as f:
-            
+
             if nchannels is not None:
                 file_nchannels = f.getnchannels()
                 if int(nchannels) != file_nchannels:
@@ -69,7 +73,7 @@ def wavelint(
                             f"Found {file_nchannels} channels ({nchannels}"
                             f" expected) at file {filename}\n"
                         )
-            
+
             if sample_width is not None:
                 file_sample_width = f.getsampwidth()
                 if int(sample_width) != file_sample_width:
@@ -79,7 +83,7 @@ def wavelint(
                             f"Found sample width of {file_sample_width}"
                             f" ({sample_width} expected) at file {filename}\n"
                         )
-            
+
             if frame_rate is not None:
                 file_frame_rate = f.getframerate()
                 if int(frame_rate) != file_frame_rate:
@@ -89,7 +93,7 @@ def wavelint(
                             f"Found frame rate of {file_frame_rate}"
                             f" ({frame_rate} expected) at file {filename}\n"
                         )
-            
+
             if nframes is not None:
                 file_nframes = f.getnframes()
                 if int(nframes) != file_nframes:
@@ -99,7 +103,7 @@ def wavelint(
                             f"Found {file_nframes} number of frames"
                             f" ({nframes} expected) at file {filename}\n"
                         )
-            
+
             if compression_type is not None:
                 file_compression_type = f.getcomptype()
                 if compression_type != file_compression_type:
@@ -110,7 +114,7 @@ def wavelint(
                             f" ('{compression_type}' expected) at file"
                             f" {filename}\n"
                         )
-            
+
             if compression_name is not None:
                 file_compression_name = f.getcompname()
                 if compression_name != file_compression_name:
@@ -121,10 +125,10 @@ def wavelint(
                             f" ('{compression_name}' expected) at file"
                             f" {filename}\n"
                         )
-            
+
             if max_duration is not None or min_duration is not None:
                 file_duration = round(f.getnframes() / f.getframerate(), 2)
-            
+
             if max_duration is not None and max_duration < file_duration:
                 exitcode = 1
                 if not quiet:
@@ -133,7 +137,7 @@ def wavelint(
                         f" than allowed ({float(max_duration)}) at file"
                         f" {filename}\n"
                     )
-            
+
             if min_duration is not None and min_duration > file_duration:
                 exitcode = 1
                 if not quiet:
@@ -141,16 +145,14 @@ def wavelint(
                         f"Found lower duration ({float(file_duration)})"
                         f" than allowed ({float(min_duration)}) at file"
                         f" {filename}\n"
-                    )            
-    
+                    )
+
     return exitcode
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "filenames", nargs="*", help="WAVE filenames to lint"
-    )
+    parser.add_argument("filenames", nargs="*", help="WAVE filenames to lint")
     parser.add_argument("-q", "--quiet", action="store_true", help="Supress output")
     parser.add_argument(
         "-nchannels",

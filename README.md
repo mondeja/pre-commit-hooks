@@ -1,5 +1,7 @@
 # mondeja's pre-comit hooks
 
+
+
 ## Hooks
 
 ### **`wavelint`**
@@ -19,3 +21,32 @@ durations...
  sounds must have.
 - **`-max-duration=TIME`** (*float*): Maximum duration in seconds that your
  sounds must have.
+ 
+### **`dev-extras-require`**
+
+> - Doesn't support `setup.py` files. Please, [migrate your setup configuration
+ to `setup.cfg` format][setup-py-upgrade-link].
+- Support for `pyproject.toml` files is limited to printing errors, automatic
+ file rewriting is not performed.
+
+Check if your development dependencies contains all other extras requirements.
+If an extra requirement is defined in other extra group than your development
+one, it will be added to your development extra dependencies group. If your
+development group is not defined, it will be created.
+
+This is useful if you want to execute `python -m pip install -e .[dev]` to
+install all the optional requirements of the package, so if you add new
+requirements to other groups, it would be added to development requirements.
+
+#### Parameters
+
+- **`-extra=NAME`** (*str*): Name for your development requirements extra group
+ (as default `dev`).
+- **`-setup-cfg=PATH`** (*str*): Path to your `setup.cfg` file, mandatory if
+ the extras requirements are defined in a `setup.cfg` file and this is located
+ in another directory than the current one.
+- **`-pyproject-toml=PATH`** (*str*): Path to your `pyproject.toml` file,
+ mandatory if the extras requirements are defined in a `pyproject.toml` file
+ and this is located in another directory than the current one.
+
+[setup-py-upgrade-link]: https://github.com/asottile/setup-py-upgrade

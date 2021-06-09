@@ -1,0 +1,46 @@
+[build-system]
+requires = ["flit_core >=2,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.metadata]
+module = "furo"
+requires-python = ">=3.6"
+requires = [
+  "beautifulsoup4",
+  "sphinx ~= 3.0",
+]
+classifiers = [
+  "Framework :: Sphinx",
+  "Framework :: Sphinx :: Theme",
+  "Programming Language :: Python :: 3",
+]
+
+[tool.flit.metadata.requires-extra]
+test = [
+  "pytest",
+  "pytest-cov",
+  "pytest-xdist",
+]
+doc = [
+  "myst-parser",
+  "sphinx-copybutton",
+  "sphinx-inline-tabs",
+  # Broken release. https://github.com/executablebooks/MyST-Parser/issues/343
+  "docutils != 0.17",
+]
+
+[tool.flit.entrypoints]
+"sphinx.html_themes" = {furo = "furo"}
+
+[tool.flit.sdist]
+include = [
+  # Generated assets
+  "src/furo/theme/furo/static/*/*",
+]
+exclude = [
+  "docs/", "src/furo/assets",
+  # JS stuff
+  "gulpfile.js", "package.json", "package-lock.json",
+  # Linting stuff
+  ".flake8", ".isort.cfg", ".pre-commit-config.yaml",
+]
