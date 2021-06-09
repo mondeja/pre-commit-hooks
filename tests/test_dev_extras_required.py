@@ -7,7 +7,7 @@ import tempfile
 
 import pytest
 
-from hooks.dev_extras_require import check_pyproject_toml, check_setup_cfg
+from hooks.dev_extras_required import check_pyproject_toml, check_setup_cfg
 
 
 @pytest.mark.parametrize(
