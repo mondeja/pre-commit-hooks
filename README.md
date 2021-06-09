@@ -1,5 +1,8 @@
 # mondeja's pre-commit hooks
 
+[![PyPI][pypi-version-badge-link]][pypi-link]
+[![Python versions][pypi-pyversions-badge-link]][pypi-link]
+[![License][license-image]][license-link]
 [![Tests][tests-image]][tests-link]
 
 ## Hooks
@@ -49,6 +52,11 @@ requirements to other groups, it would be added to development requirements.
  mandatory if the extras requirements are defined in a `pyproject.toml` file
  and this is located in another directory than the current one.
 
+
+[pypi-link]: https://pypi.org/project/mondeja_pre_commit_hooks
+[pypi-version-badge-link]: https://img.shields.io/pypi/v/mondeja_pre_commit_hooks
+[pypi-pyversions-badge-link]: https://img.shields.io/pypi/pyversions/mondeja_pre_commit_hooks
+[license-image]: https://img.shields.io/pypi/l/mondeja_pre_commit_hooks?color=light-green
 [tests-image]: https://img.shields.io/github/workflow/status/mondeja/pre-commit-hooks/CI?logo=github&label=tests
 [tests-link]: https://github.com/mondeja/pre-commit-hooks/actions?query=workflow%CI
 
