@@ -57,6 +57,7 @@ requirements to other groups, it would be added to development requirements.
 [pypi-version-badge-link]: https://img.shields.io/pypi/v/mondeja_pre_commit_hooks
 [pypi-pyversions-badge-link]: https://img.shields.io/pypi/pyversions/mondeja_pre_commit_hooks
 [license-image]: https://img.shields.io/pypi/l/mondeja_pre_commit_hooks?color=light-green
+[license-link]: https://github.com/mondeja/pre-commit-po-hooks/blob/master/LICENSE
 [tests-image]: https://img.shields.io/github/workflow/status/mondeja/pre-commit-hooks/CI?logo=github&label=tests
 [tests-link]: https://github.com/mondeja/pre-commit-hooks/actions?query=workflow%CI
 
