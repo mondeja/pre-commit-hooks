@@ -1,6 +1,6 @@
-# mondeja's pre-comit hooks
+# mondeja's pre-commit hooks
 
-
+[![Tests][tests-image]][tests-link]
 
 ## Hooks
 
@@ -11,22 +11,22 @@ durations...
 
 #### Parameters
 
-- **`-nchannels=N`** (*int*): Number of channels that your sounds must have.
-- **`-sample-width=N`** (*int*): Number of bytes that your sounds must have.
-- **`-frame-rate=N`** (*int*): Sampling frequency that your sounds must have.
-- **`-nframes=N`** (*int*): Exact number of frames that your sounds must have.
-- **`-comptype=TYPE`** (*str*): Compression type that your sounds must have.
-- **`-compname=NAME`** (*int*): Compression that your sounds must have.
-- **`-min-duration=TIME`** (*float*): Minimum duration in seconds that your
+- `-nchannels=N` (*int*): Number of channels that your sounds must have.
+- `-sample-width=N` (*int*): Number of bytes that your sounds must have.
+- `-frame-rate=N` (*int*): Sampling frequency that your sounds must have.
+- `-nframes=N` (*int*): Exact number of frames that your sounds must have.
+- `-comptype=TYPE` (*str*): Compression type that your sounds must have.
+- `-compname=NAME` (*int*): Compression that your sounds must have.
+- `-min-duration=TIME` (*float*): Minimum duration in seconds that your
  sounds must have.
-- **`-max-duration=TIME`** (*float*): Maximum duration in seconds that your
+- `-max-duration=TIME` (*float*): Maximum duration in seconds that your
  sounds must have.
  
 ### **`dev-extras-require`**
 
 > - Doesn't support `setup.py` files. Please, [migrate your setup configuration
  to `setup.cfg` format][setup-py-upgrade-link].
-- Support for `pyproject.toml` files is limited to printing errors, automatic
+> - Support for `pyproject.toml` files is limited to printing errors, automatic
  file rewriting is not performed.
 
 Check if your development dependencies contains all other extras requirements.
@@ -40,13 +40,16 @@ requirements to other groups, it would be added to development requirements.
 
 #### Parameters
 
-- **`-extra=NAME`** (*str*): Name for your development requirements extra group
+- `-extra=NAME` (*str*): Name for your development requirements extra group
  (as default `dev`).
-- **`-setup-cfg=PATH`** (*str*): Path to your `setup.cfg` file, mandatory if
+- `-setup-cfg=PATH` (*str*): Path to your `setup.cfg` file, mandatory if
  the extras requirements are defined in a `setup.cfg` file and this is located
  in another directory than the current one.
-- **`-pyproject-toml=PATH`** (*str*): Path to your `pyproject.toml` file,
+- `-pyproject-toml=PATH` (*str*): Path to your `pyproject.toml` file,
  mandatory if the extras requirements are defined in a `pyproject.toml` file
  and this is located in another directory than the current one.
+
+[tests-image]: https://img.shields.io/github/workflow/status/mondeja/pre-commit-hooks/CI?logo=github&label=tests
+[tests-link]: https://github.com/mondeja/pre-commit-hooks/actions?query=workflow%CI
 
 [setup-py-upgrade-link]: https://github.com/asottile/setup-py-upgrade
