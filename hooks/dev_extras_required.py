@@ -66,6 +66,7 @@ def check_setup_cfg(
                     )
             else:
                 dev_extra_requirements.append(requirement)
+                dev_extra_requirements.sort()
                 config.set(
                     "options.extras_require",
                     dev_extra_name,
@@ -184,7 +185,7 @@ def check_pyproject_toml(
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("filenames", nargs="*", help="WAVE filenames to lint")
+    parser.add_argument("filenames", nargs="*")
     parser.add_argument("-q", "--quiet", action="store_true", help="Supress output")
     parser.add_argument(
         "-d",

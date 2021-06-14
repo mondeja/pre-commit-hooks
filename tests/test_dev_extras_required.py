@@ -105,8 +105,8 @@ test =
 	pytest-cov==2.12.1
 	waves==0.2.4
 {dev_extra_name} = 
-	pytest==6.2.0
 	pytest-cov==2.12.1
+	pytest==6.2.0
 	waves==0.2.4
 
 [bdist_wheel]
@@ -202,8 +202,8 @@ test =
 	pytest==6.2.0
 {dev_extra_name} = 
 	pytest-cov==2.12.1
-	waves==0.2.4
 	pytest==6.2.0
+	waves==0.2.4
 
 [bdist_wheel]
 universal = True
@@ -251,9 +251,9 @@ console_scripts =
 test = 
 	pytest==6.2.0
 {dev_extra_name} =
+	pytest==6.2.0
 	pytest-cov==2.12.1
 	waves==0.2.4
-	pytest==6.2.0
 
 [bdist_wheel]
 universal = True
@@ -290,9 +290,9 @@ console_scripts =
 test = 
 	pytest==6.2.0
 {dev_extra_name} =
+	pytest==6.2.0
 	pytest-cov==2.12.1
 	waves==0.2.4
-	pytest==6.2.0
 
 [bdist_wheel]
 universal = True

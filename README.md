@@ -9,7 +9,7 @@
 
 ```yaml
 - repo: https://github.com/mondeja/pre-commit-hooks
-  rev: v1.0.0
+  rev: v1.1.0
   hooks:
     - id: dev-extras-required
 ```
@@ -61,6 +61,15 @@ requirement to another groups, it will be added to development requirements.
  mandatory if the extras requirements are defined in a `pyproject.toml` file
  and this is located in another directory than the current one.
 
+### **`add-pre-commit-hook`**
+
+Add a pre-commit hook to your configuration file if is not already defined.
+
+#### Parameters
+
+- `-repo=URL` (*str*) Repository of the new hook.
+- `-rev=VERSION` (*str*) Version of the new hook.
+- `-hook=ID` (*str*) Identifier of the new hook.
 
 [pypi-link]: https://pypi.org/project/mondeja_pre_commit_hooks
 [pypi-version-badge-link]: https://img.shields.io/pypi/v/mondeja_pre_commit_hooks

@@ -10,3 +10,11 @@
   description: Check if your development dependencies contains all other extras requirements
   files: '(setup\.cfg)|(pyproject\.toml)'
   language: python
+- id: add-pre-commit-hook
+  name: add-pre-comimt-hook
+  entry: add-pre-commit-hook
+  description: Add a pre-commit hook to your configuration file if is not already defined
+  files: .pre-commit-config.yaml
+  language: python
+  additional_dependencies:
+    - pyyaml
