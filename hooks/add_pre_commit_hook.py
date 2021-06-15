@@ -64,6 +64,8 @@ def add_pre_commit_hook(repo, rev, hook_id, quiet=False, dry_run=False):
         indent = " " * _repo_indentation
 
         new_lines = config_lines
+        if not config_lines[-1].strip():
+            new_lines = config_lines[:-1]
         new_lines.extend(
             [
                 f"{indent}- repo: {repo}\n",
@@ -110,6 +112,8 @@ def add_pre_commit_hook(repo, rev, hook_id, quiet=False, dry_run=False):
         for n, line in enumerate(config_lines):
             new_lines.append(line)
             if n == i:
+                if not new_lines[-1].strip():
+                    new_lines = new_lines[:-1]
                 new_lines.append(" " * _hooks_indent + f"- id: {hook_id}\n")
 
         if dry_run:

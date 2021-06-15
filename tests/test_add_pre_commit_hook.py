@@ -26,6 +26,7 @@ from hooks.add_pre_commit_hook import add_pre_commit_hook
     rev: v1.17.0
     hooks:
       - id: setup-cfg-fmt
+
 """,
             """repos:
   - repo: https://github.com/asottile/setup-cfg-fmt
@@ -49,6 +50,7 @@ from hooks.add_pre_commit_hook import add_pre_commit_hook
     rev: v1.0.0
     hooks:
       - id: wavelint
+
 """,
             """repos:
   - repo: https://github.com/mondeja/pre-commit-hooks
