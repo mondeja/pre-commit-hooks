@@ -9,7 +9,7 @@
 
 ```yaml
 - repo: https://github.com/mondeja/pre-commit-hooks
-  rev: v1.1.0
+  rev: v1.1.1
   hooks:
     - id: dev-extras-required
 ```
