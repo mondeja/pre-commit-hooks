@@ -7,6 +7,60 @@ import sys
 import yaml
 
 
+def repeated_definitions_of_repo_in_config(config, repo):
+    """Check if there are multiple definitions of the same repository in a
+    pre-commit configuration object.
+
+    Parameters
+    ----------
+
+    config : dict
+      Pre-commit configuration dictionary.
+
+    repo : str
+      Repository to check for multiple definitions.
+
+    Returns
+    -------
+
+    bool : ``True`` if there are more than one definition of the passed
+      repository in the configuration dictionary, ``False`` otherwise.
+    """
+    return len([_repo for _repo in config["repos"] if _repo["repo"] == repo]) > 1
+
+
+def is_repo_in_config(config, repo, rev, hook_id):
+    """Get if a repository is defined in a pre-commit configuration.
+
+    Parameters
+    ----------
+
+    config : dict
+      Pre-commit configuration dictionary.
+
+    repo : str
+      Repository to search.
+
+    rev : str
+      Repository tag revision.
+
+    hook_id : Hook identifier.
+
+    Returns
+    -------
+
+    dict : Information about if the repository and the hook have been found.
+    """
+    response = {"repo_found": False, "hook_found": False, "same_rev": False}
+    for repo_ in config["repos"]:
+        if repo_["repo"] == repo:
+            response["repo_found"] = True
+            response["hook_found"] = hook_id in [hook["id"] for hook in repo_["hooks"]]
+            response["same_rev"] = repo_["rev"] == rev
+            break
+    return response
+
+
 def add_pre_commit_hook(repo, rev, hook_id, quiet=False, dry_run=False):
     """Add a pre-commit hook configuration to a pre-commit configuration file.
 
@@ -33,7 +87,6 @@ def add_pre_commit_hook(repo, rev, hook_id, quiet=False, dry_run=False):
     -------
 
     int: 1 if the pre-commit configuration file has been changed, 0 otherwise.
-
     """
     pre_commit_config_path = ".pre-commit-config.yaml"
     if not os.path.isfile(pre_commit_config_path):
@@ -46,15 +99,9 @@ def add_pre_commit_hook(repo, rev, hook_id, quiet=False, dry_run=False):
     if "repos" not in config or not config["repos"]:
         return 0
 
-    _repo_found, _hook_found, _same_rev = (False, False, False)
-    for repo_ in config["repos"]:
-        if repo_["repo"] == repo:
-            _repo_found = True
-            _hook_found = hook_id in [hook["id"] for hook in repo_["hooks"]]
-            _same_rev = repo_["rev"] == rev
-            break
+    repo_in_config = is_repo_in_config(config, repo, rev, hook_id)
 
-    if not _repo_found or not _same_rev:
+    if not repo_in_config["repo_found"]:
         _repo_indentation = 2
         config_lines = config_content.splitlines(keepends=True)
         for line in config_lines:
@@ -87,10 +134,20 @@ def add_pre_commit_hook(repo, rev, hook_id, quiet=False, dry_run=False):
 
         return 1
 
-    if not _hook_found and _same_rev:
+    # repo in configuration multiple times
+    if repeated_definitions_of_repo_in_config(config, repo):
+        sys.stderr.write(
+            f"Multiple definitions of repository '{repo}' in configuration"
+            " file '.pre-commit-config.yaml'. You must determine manually one"
+            " of them.\n"
+        )
+        return 1
+
+    if not repo_in_config["hook_found"]:
         config_lines = config_content.splitlines(keepends=True)
 
         _inside_repo, _inside_hooks, _hooks_indent = (False, False, None)
+        _rev_line = None
         for i, line in enumerate(config_lines):
             if not _inside_repo:
                 if line.lstrip().startswith("- repo:") and repo in line.replace(
@@ -107,10 +164,15 @@ def add_pre_commit_hook(repo, rev, hook_id, quiet=False, dry_run=False):
                 else:
                     if line.lstrip().startswith("hooks:"):
                         _inside_hooks = True
+                    elif line.lstrip().startswith("rev:"):
+                        _rev_line = i
 
         new_lines = []
         for n, line in enumerate(config_lines):
-            new_lines.append(line)
+            if _rev_line is not None and not repo_in_config["same_rev"]:
+                new_lines.append(line.split(":")[0] + f": {rev}\n")
+            else:
+                new_lines.append(line)
             if n == i:
                 if not new_lines[-1].strip():
                     new_lines = new_lines[:-1]

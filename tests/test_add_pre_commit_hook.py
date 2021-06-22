@@ -15,7 +15,15 @@ from hooks.add_pre_commit_hook import add_pre_commit_hook
     "dry_run", (False, True), ids=("dry_run=False", "dry_run=True")
 )
 @pytest.mark.parametrize(
-    ("repo", "rev", "hook_id", "input_content", "expected_result", "expected_exitcode"),
+    (
+        "repo",
+        "rev",
+        "hook_id",
+        "input_content",
+        "expected_result",
+        "expected_exitcode",
+        "expected_stderr",
+    ),
     (
         pytest.param(
             "https://github.com/mondeja/pre-commit-hooks",
@@ -39,6 +47,7 @@ from hooks.add_pre_commit_hook import add_pre_commit_hook
       - id: dev-extras-required
 """,
             1,
+            None,
             id="add-repo",
         ),
         pytest.param(
@@ -60,6 +69,7 @@ from hooks.add_pre_commit_hook import add_pre_commit_hook
       - id: dev-extras-required
 """,
             1,
+            None,
             id="add-hook",
         ),
         pytest.param(
@@ -79,7 +89,32 @@ from hooks.add_pre_commit_hook import add_pre_commit_hook
       - id: dev-extras-required
 """,
             0,
-            id="add-hook",
+            None,
+            id="dont-add-hook",
+        ),
+        pytest.param(
+            "https://github.com/mondeja/pre-commit-hooks",
+            "v1.1.2",
+            "foo-hook-id",
+            r"""repos:
+  - repo: https://github.com/mondeja/pre-commit-hooks
+    rev: v1.0.0
+    hooks:
+      - id: dev-extras-required
+  - repo: https://github.com/mondeja/pre-commit-hooks
+    rev: v1.1.2
+    hooks:
+      - id: dev-extras-required
+""",
+            None,
+            1,
+            (
+                "Multiple definitions of repository"
+                " 'https://github.com/mondeja/pre-commit-hooks' in"
+                " configuration file '.pre-commit-config.yaml'."
+                " You must determine manually one of them.\n"
+            ),
+            id="multiple-definitions",
         ),
     ),
 )
@@ -90,36 +125,45 @@ def test_add_pre_commit_hook(
     input_content,
     expected_result,
     expected_exitcode,
+    expected_stderr,
     quiet,
     dry_run,
 ):
-    previous_cwd = os.getcwd()
+    try:
+        previous_cwd = os.getcwd()
 
-    with tempfile.TemporaryDirectory() as dirname:
-        filepath = os.path.join(dirname, ".pre-commit-config.yaml")
-        if os.path.isfile(filepath):
-            os.remove(filepath)
+        with tempfile.TemporaryDirectory() as dirname:
+            filepath = os.path.join(dirname, ".pre-commit-config.yaml")
+            if os.path.isfile(filepath):
+                os.remove(filepath)
 
-        with open(filepath, "w") as f:
-            f.write(input_content)
+            with open(filepath, "w") as f:
+                f.write(input_content)
 
-        os.chdir(dirname)
+            os.chdir(dirname)
 
-        stderr = io.StringIO()
+            stderr = io.StringIO()
 
-        with contextlib.redirect_stderr(stderr):
-            exitcode = add_pre_commit_hook(
-                repo,
-                rev,
-                hook_id,
-                quiet=quiet,
-                dry_run=dry_run,
-            )
+            with contextlib.redirect_stderr(stderr):
+                exitcode = add_pre_commit_hook(
+                    repo,
+                    rev,
+                    hook_id,
+                    quiet=quiet,
+                    dry_run=dry_run,
+                )
 
-        assert exitcode == expected_exitcode
+            assert exitcode == expected_exitcode
 
-        if not dry_run:
-            with open(filepath) as f:
-                assert f.read() == expected_result
+            if expected_stderr is not None:
+                assert stderr.getvalue() == expected_stderr
+            else:
 
-    os.chdir(previous_cwd)
+                if not dry_run:
+                    with open(filepath) as f:
+                        assert f.read() == expected_result
+
+    except Exception:
+        raise
+    finally:
+        os.chdir(previous_cwd)
