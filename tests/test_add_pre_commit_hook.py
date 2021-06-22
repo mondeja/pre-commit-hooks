@@ -162,8 +162,5 @@ def test_add_pre_commit_hook(
                 if not dry_run:
                     with open(filepath) as f:
                         assert f.read() == expected_result
-
-    except Exception:
-        raise
     finally:
         os.chdir(previous_cwd)

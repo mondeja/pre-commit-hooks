@@ -9,7 +9,7 @@
 
 ```yaml
 - repo: https://github.com/mondeja/pre-commit-hooks
-  rev: v1.1.3
+  rev: v1.2.0
   hooks:
     - id: dev-extras-required
 ```
@@ -70,6 +70,11 @@ Add a pre-commit hook to your configuration file if is not already defined.
 - `-repo=URL` (*str*) Repository of the new hook.
 - `-rev=VERSION` (*str*) Version of the new hook.
 - `-hook=ID` (*str*) Identifier of the new hook.
+
+### **`root-editorconfig-required`**
+
+Check if your repository has an `.editorconfig` file and if this has a `root`
+directive defined as `true` before section headers.
 
 [pypi-link]: https://pypi.org/project/mondeja_pre_commit_hooks
 [pypi-version-badge-link]: https://img.shields.io/pypi/v/mondeja_pre_commit_hooks

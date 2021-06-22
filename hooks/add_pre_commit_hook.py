@@ -194,7 +194,6 @@ def add_pre_commit_hook(repo, rev, hook_id, quiet=False, dry_run=False):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("filenames", nargs="*")
     parser.add_argument("-q", "--quiet", action="store_true", help="Supress output")
     parser.add_argument(
         "-d",

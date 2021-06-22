@@ -1,22 +1,28 @@
-- id: wavelint
-  name: wavelint
-  entry: wavelint-hook
-  description: Lints WAVE files
-  files: \.wav$
+- id: add-pre-commit-hook
+  name: add-pre-commit-hook
+  entry: add-pre-commit-hook
+  description: Add a pre-commit hook to your configuration file if is not already defined
+  files: \.pre-commit-config\.yaml
   language: python
+  additional_dependencies:
+    - pyyaml
+  always_run: true
+  pass_filenames: false
 - id: dev-extras-required
   name: dev-extras-required
   entry: dev-extras-required-hook
   description: Check if your development dependencies contains all other extras requirements
   files: '(setup\.cfg)|(pyproject\.toml)'
   language: python
-- id: add-pre-commit-hook
-  name: add-pre-commit-hook
-  entry: add-pre-commit-hook
-  description: Add a pre-commit hook to your configuration file if is not already defined
-  files: .pre-commit-config.yaml
+- id: wavelint
+  name: wavelint
+  entry: wavelint-hook
+  description: Lints WAVE files
+  files: \.wav$
   language: python
-  additional_dependencies:
-    - pyyaml
+- id: root-editorconfig-required
+  name: root-editorconfig-required
+  entry: root-editorconfig-required-hook
+  description: Check if your repository has an '.editorconfig' file and if this has a 'root' directive defined as 'true' before section headers
   always_run: true
-  pass_filenames: true
+  pass_filenames: false
