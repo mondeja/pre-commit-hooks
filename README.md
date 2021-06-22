@@ -16,23 +16,15 @@
 
 ## Hooks
 
-### **`wavelint`**
+### **`add-pre-commit-hook`**
 
-Check if your WAVE files have the correct number of channels, frame rate,
-durations...
+Add a pre-commit hook to your configuration file if is not already defined.
 
 #### Parameters
 
-- `-nchannels=N` (*int*): Number of channels that your sounds must have.
-- `-sample-width=N` (*int*): Number of bytes that your sounds must have.
-- `-frame-rate=N` (*int*): Sampling frequency that your sounds must have.
-- `-nframes=N` (*int*): Exact number of frames that your sounds must have.
-- `-comptype=TYPE` (*str*): Compression type that your sounds must have.
-- `-compname=NAME` (*int*): Compression that your sounds must have.
-- `-min-duration=TIME` (*float*): Minimum duration in seconds that your
- sounds must have.
-- `-max-duration=TIME` (*float*): Maximum duration in seconds that your
- sounds must have.
+- `-repo=URL` (*str*) Repository of the new hook.
+- `-rev=VERSION` (*str*) Version of the new hook.
+- `-hook=ID` (*str*) Identifier of the new hook.
  
 ### **`dev-extras-required`**
 
@@ -61,20 +53,28 @@ requirement to another groups, it will be added to development requirements.
  mandatory if the extras requirements are defined in a `pyproject.toml` file
  and this is located in another directory than the current one.
 
-### **`add-pre-commit-hook`**
-
-Add a pre-commit hook to your configuration file if is not already defined.
-
-#### Parameters
-
-- `-repo=URL` (*str*) Repository of the new hook.
-- `-rev=VERSION` (*str*) Version of the new hook.
-- `-hook=ID` (*str*) Identifier of the new hook.
-
 ### **`root-editorconfig-required`**
 
 Check if your repository has an `.editorconfig` file and if this has a `root`
 directive defined as `true` before section headers.
+
+### **`wavelint`**
+
+Check if your WAVE files have the correct number of channels, frame rate,
+durations...
+
+#### Parameters
+
+- `-nchannels=N` (*int*): Number of channels that your sounds must have.
+- `-sample-width=N` (*int*): Number of bytes that your sounds must have.
+- `-frame-rate=N` (*int*): Sampling frequency that your sounds must have.
+- `-nframes=N` (*int*): Exact number of frames that your sounds must have.
+- `-comptype=TYPE` (*str*): Compression type that your sounds must have.
+- `-compname=NAME` (*int*): Compression that your sounds must have.
+- `-min-duration=TIME` (*float*): Minimum duration in seconds that your
+ sounds must have.
+- `-max-duration=TIME` (*float*): Maximum duration in seconds that your
+ sounds must have.
 
 [pypi-link]: https://pypi.org/project/mondeja_pre_commit_hooks
 [pypi-version-badge-link]: https://img.shields.io/pypi/v/mondeja_pre_commit_hooks
