@@ -59,7 +59,6 @@ from hooks.add_pre_commit_hook import add_pre_commit_hook
     rev: v1.0.0
     hooks:
       - id: wavelint
-
 """,
             """repos:
   - repo: https://github.com/mondeja/pre-commit-hooks
@@ -115,6 +114,39 @@ from hooks.add_pre_commit_hook import add_pre_commit_hook
                 " You must determine manually one of them.\n"
             ),
             id="multiple-definitions",
+        ),
+        pytest.param(
+            "https://github.com/editorconfig-checker/editorconfig-checker.python",
+            "2.3.5",
+            "editorconfig-checker",
+            r"""repos:
+  - repo: https://github.com/mondeja/pre-commit-hooks
+    rev: v1.2.1
+    hooks:
+      - id: add-pre-commit-hook
+        name: add-root-editorconfig-required-pre-commit-hook
+        args:
+          - -repo=https://github.com/mondeja/pre-commit-hooks
+          - -id=root-editorconfig-required
+          - -rev=v1.2.1""",
+            r"""repos:
+  - repo: https://github.com/mondeja/pre-commit-hooks
+    rev: v1.2.1
+    hooks:
+      - id: add-pre-commit-hook
+        name: add-root-editorconfig-required-pre-commit-hook
+        args:
+          - -repo=https://github.com/mondeja/pre-commit-hooks
+          - -id=root-editorconfig-required
+          - -rev=v1.2.1
+  - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
+    rev: 2.3.5
+    hooks:
+      - id: editorconfig-checker
+""",
+            1,
+            None,
+            id="add-hook-repo",
         ),
     ),
 )

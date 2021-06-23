@@ -100,7 +100,6 @@ def add_pre_commit_hook(repo, rev, hook_id, quiet=False, dry_run=False):
         return 0
 
     repo_in_config = is_repo_in_config(config, repo, rev, hook_id)
-
     if not repo_in_config["repo_found"]:
         _repo_indentation = 2
         config_lines = config_content.splitlines(keepends=True)
@@ -113,6 +112,8 @@ def add_pre_commit_hook(repo, rev, hook_id, quiet=False, dry_run=False):
         new_lines = config_lines
         if not config_lines[-1].strip():
             new_lines = config_lines[:-1]
+        if config_lines[-1][-1] != "\n":
+            config_lines[-1] += "\n"
         new_lines.extend(
             [
                 f"{indent}- repo: {repo}\n",
@@ -169,7 +170,7 @@ def add_pre_commit_hook(repo, rev, hook_id, quiet=False, dry_run=False):
 
         new_lines = []
         for n, line in enumerate(config_lines):
-            if _rev_line is not None and not repo_in_config["same_rev"]:
+            if n == _rev_line and not repo_in_config["same_rev"]:
                 new_lines.append(line.split(":")[0] + f": {rev}\n")
             else:
                 new_lines.append(line)
