@@ -50,9 +50,15 @@ repos:
           - -c
           - .yamllint
   - repo: https://github.com/mondeja/repo-stream
-    rev: v1.0.2
+    rev: v1.1.0
     hooks:
       - id: repo-stream
+        name: repo-stream-updates
         args:
           - -config=https://github.com/mondeja/repo-stream-config
           - -updater=upstream
+      - id: repo-stream
+        name: repo-stream-python-updates
+        args:
+          - -config=https://github.com/mondeja/repo-stream-config
+          - -updater=py-upstream
