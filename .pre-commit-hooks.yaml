@@ -2,7 +2,6 @@
   name: add-pre-commit-hook
   entry: add-pre-commit-hook
   description: Add a pre-commit hook to your configuration file if is not already defined
-  files: \.pre-commit-config\.yaml
   language: python
   additional_dependencies:
     - pyyaml
@@ -24,5 +23,6 @@
   name: root-editorconfig-required
   entry: root-editorconfig-required-hook
   description: Check if your repository has an '.editorconfig' file and if this has a 'root' directive defined as 'true' before section headers
+  language: python
   always_run: true
   pass_filenames: false
