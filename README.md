@@ -9,9 +9,13 @@
 
 ```yaml
 - repo: https://github.com/mondeja/pre-commit-hooks
-  rev: v1.2.2
+  rev: v1.3.0
   hooks:
     - id: dev-extras-required
+    - id: root-editorconfig-required
+    - id: cloudflare-nameservers
+      args:
+        - -domain=my-web.xyz
 ```
 
 ## Hooks
@@ -53,6 +57,26 @@ requirement to another groups, it will be added to development requirements.
  mandatory if the extras requirements are defined in a `pyproject.toml` file
  and this is located in another directory than the current one.
 
+### **`nameservers-endswith`**
+
+Check that the nameservers of a domain ends with a string or raise an error.
+You can use it to check if a site like Clouflare is managing a domain using
+`-nameserver=cloudflare.com`.
+
+#### Parameters
+
+- `-domain=DOMAIN` (*str*): Domain name whose nameservers will be checked.
+- `-nameserver=NAMESERVER` (*str*): String to end the domain name servers in.
+
+### **`cloudflare-nameservers`**
+
+Check that [Cloudflare][cloudflare-link] is handling the nameservers of a
+domain.
+
+#### Parameters
+
+- `-domain=DOMAIN` (*str*): Domain name whose nameservers will be checked.
+
 ### **`root-editorconfig-required`**
 
 Check if your repository has an `.editorconfig` file and if this has a `root`
@@ -76,6 +100,10 @@ durations...
 - `-max-duration=TIME` (*float*): Maximum duration in seconds that your
  sounds must have.
 
+## More hooks
+
+- [mondeja/pre-commit-po-hooks][pre-commit-po-hooks-link]
+
 [pypi-link]: https://pypi.org/project/mondeja_pre_commit_hooks
 [pypi-version-badge-link]: https://img.shields.io/pypi/v/mondeja_pre_commit_hooks
 [pypi-pyversions-badge-link]: https://img.shields.io/pypi/pyversions/mondeja_pre_commit_hooks
@@ -85,3 +113,5 @@ durations...
 [tests-link]: https://github.com/mondeja/pre-commit-hooks/actions?query=workflow%CI
 
 [setup-py-upgrade-link]: https://github.com/asottile/setup-py-upgrade
+[cloudflare-link]: https://cloudflare.com
+[pre-commit-po-hooks-link]: https://github.com/mondeja/pre-commit-po-hooks

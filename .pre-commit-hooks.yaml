@@ -7,18 +7,28 @@
     - pyyaml
   always_run: true
   pass_filenames: false
+- id: cloudflare-nameservers
+  name: cloudflare-nameservers
+  entry: nameservers-endswith-hook -nameserver=cloudflare.com
+  description: Check that Cloudflare mannages a domain
+  language: python
+  pass_filenames: false
+  always_run: true
+  additional_dependencies:
+    - dnspython
 - id: dev-extras-required
   name: dev-extras-required
   entry: dev-extras-required-hook
   description: Check if your development dependencies contains all other extras requirements
   files: '(setup\.cfg)|(pyproject\.toml)'
   language: python
-- id: wavelint
-  name: wavelint
-  entry: wavelint-hook
-  description: Lints WAVE files
-  files: \.wav$
+- id: nameservers-endswith
+  name: nameservers-endswith
+  entry: nameservers-endswith-hook
+  description: Check if the nameservers of a domain ends with a predefined string
   language: python
+  pass_filenames: false
+  always_run: true
 - id: root-editorconfig-required
   name: root-editorconfig-required
   entry: root-editorconfig-required-hook
@@ -26,3 +36,9 @@
   language: python
   always_run: true
   pass_filenames: false
+- id: wavelint
+  name: wavelint
+  entry: wavelint-hook
+  description: Lints WAVE files
+  files: \.wav$
+  language: python
