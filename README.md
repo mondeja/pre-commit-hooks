@@ -13,6 +13,9 @@
   hooks:
     - id: dev-extras-required
     - id: root-editorconfig-required
+    - id: freenom-autorenew
+      args:
+        - -domain=my-web.xyz
     - id: cloudflare-nameservers
       args:
         - -domain=my-web.xyz
