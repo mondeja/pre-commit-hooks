@@ -34,8 +34,8 @@ jobs:
           pip list
       - name: Test
         run: python -m pytest -svv --cov=hooks --cov-config=setup.cfg
-      - name: Doctest
-        run: python -m pytest
+        env:
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
       - name: Coveralls
         run: coveralls
         env:

@@ -7,6 +7,15 @@
     - pyyaml
   always_run: true
   pass_filenames: false
+- id: cloudflare-gh-pages-dns
+  name: cloudflare-gh-pages-dns
+  entry: cloudflare-gh-pages-dns
+  description: Check that the DNS records of a domain managed by Cloudflare are properly configured to serve a Github Pages site
+  language: python
+  additional_dependencies:
+    - cloudflare==2.8.15
+  always_run: true
+  pass_filenames: false
 - id: cloudflare-nameservers
   name: cloudflare-nameservers
   entry: nameservers-endswith-hook -nameserver=cloudflare.com

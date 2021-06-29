@@ -9,13 +9,17 @@
 
 ```yaml
 - repo: https://github.com/mondeja/pre-commit-hooks
-  rev: v1.3.0
+  rev: v1.4.0
   hooks:
     - id: dev-extras-required
     - id: root-editorconfig-required
     - id: cloudflare-nameservers
       args:
         - -domain=my-web.xyz
+    - id: cloudflare-gh-pages-dns
+      args:
+        - -domain=my-web.xyz
+        - -username=my_gh_username
 ```
 
 ## Hooks
@@ -77,6 +81,36 @@ domain.
 
 - `-domain=DOMAIN` (*str*): Domain name whose nameservers will be checked.
 
+### **`cloudflare-gh-pages-dns`**
+
+Check that the DNS records of a [Cloudflare][cloudflare-link] site are
+configured to serve a static website under [Github Pages][gh-pages-link].
+
+> You must define the environment variable `CF_API_KEY` with your
+[Cloudflare API key][cloudflare-apikey-link].
+
+The required DNS records to make it pass are:
+
+| Type | Name | Content |
+| --- | --- | --- |
+| A | {domain} | 185.199.108.153 |
+| A | {domain} | 185.199.109.153 |
+| A | {domain} | 185.199.110.153 |
+| A | {domain} | 185.199.111.153 |
+| CNAME | www | {username}.github.io |
+
+#### Parameters
+
+- `-domain=DOMAIN`: Domain managed by Cloudflare whose DNS records will be
+ checked.
+- `-username=USER`: Github username or organization under the Github Pages site
+ is being served.
+
+#### Environment variables
+
+- `CF_API_KEY`: [Cloudflare API key][cloudflare-apikey-link] of the user that
+ is managing the DNS records of the site using [Cloudflare][cloudflare-link].
+
 ### **`root-editorconfig-required`**
 
 Check if your repository has an `.editorconfig` file and if this has a `root`
@@ -114,4 +148,6 @@ durations...
 
 [setup-py-upgrade-link]: https://github.com/asottile/setup-py-upgrade
 [cloudflare-link]: https://cloudflare.com
+[cloudflare-apikey-link]: https://support.cloudflare.com/hc/en-us/articles/200167836-Managing-API-Tokens-and-Keys
+[gh-pages-link]: https://pages.github.com
 [pre-commit-po-hooks-link]: https://github.com/mondeja/pre-commit-po-hooks

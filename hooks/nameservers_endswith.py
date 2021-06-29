@@ -23,6 +23,11 @@ def nameservers_endswith(domain, nameserver, quiet=False):
 
     quiet : bool, optional
       Don't print the error in STDERR if a nameserver doesn't match.
+
+    Returns
+    -------
+
+    bool : ``True`` if the nameservers match or ``False``.
     """
     response = True
 
@@ -56,7 +61,7 @@ def main():
         "-nameserver",
         "--nameserver",
         type=str,
-        metavar="end",
+        metavar="NAMESERVER",
         required=True,
         default=None,
         dest="nameserver",
