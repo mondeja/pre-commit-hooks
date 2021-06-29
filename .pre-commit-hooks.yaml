@@ -45,6 +45,8 @@
   language: python
   always_run: true
   pass_filenames: false
+  additional_dependencies:
+    - requests
 - id: root-editorconfig-required
   name: root-editorconfig-required
   entry: root-editorconfig-required-hook
