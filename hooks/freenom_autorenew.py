@@ -1,4 +1,4 @@
-"""Script that auto renews a free Freenom domain."""
+"""Script that auto renews free Freenom domains."""
 
 import argparse
 import functools
@@ -158,7 +158,15 @@ def autorenew_freenom_domain(domain=None, period="12M", quiet=False):
 
 
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description=(
+            "Free Freenom domains autorenewer script.\n\nneeded environment"
+            " variables:\n  - 'FREENOM_EMAIL':    Email used to authenticate"
+            " your Freenom account.\n  - 'FREENOM_PASSWORD': Password used to"
+            " authenticate your Freenom account."
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     parser.add_argument("-q", "--quiet", action="store_true", help="Supress output")
     parser.add_argument(
         "-d",

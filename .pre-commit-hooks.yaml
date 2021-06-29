@@ -40,7 +40,7 @@
   always_run: true
 - id: freenom-autorenew
   name: freenom-autorenew
-  entry: freenom-autorenew-hook
+  entry: freenom-autorenew
   description: Renews the free domains of your Freenom account
   language: python
   always_run: true

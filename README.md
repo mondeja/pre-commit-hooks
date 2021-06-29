@@ -9,7 +9,7 @@
 
 ```yaml
 - repo: https://github.com/mondeja/pre-commit-hooks
-  rev: v1.5.0
+  rev: v1.5.1
   hooks:
     - id: dev-extras-required
     - id: root-editorconfig-required
@@ -118,8 +118,8 @@ The required DNS records to make it pass are:
 
 Renews your free [Freenom][freenom-link] domains.
 
-You must set the environment variables `FREENOM_EMAIL` and `FREENOM_PASSWORD`
-to give permissions to this hook for entering in your Freenom account.
+> You must set the environment variables `FREENOM_EMAIL` and `FREENOM_PASSWORD`
+ to give permissions to this hook for entering in your Freenom account.
 
 #### Parameters
 
@@ -136,13 +136,16 @@ to give permissions to this hook for entering in your Freenom account.
 
 #### How to use standalone
 
-You can use this hook directly from the command line in an online workflow.
+You can use this script directly from the command line in an online workflow.
 
 ```bash
 pip install mondeja-pre-commit-hooks requests
 ```
 
-Use the CLI entry `freenom-autorenew-hook`. Example for Github Actions:
+Use the CLI entry `freenom-autorenew` to execute it. You can check the
+documentation for the script executing `frenom-autorenew -h`.
+
+Configuration example for Github Actions:
 
 ```yaml
 name: freenom-autorenew
