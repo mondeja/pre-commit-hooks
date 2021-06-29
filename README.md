@@ -9,7 +9,7 @@
 
 ```yaml
 - repo: https://github.com/mondeja/pre-commit-hooks
-  rev: v1.4.0
+  rev: v1.5.0
   hooks:
     - id: dev-extras-required
     - id: root-editorconfig-required
@@ -111,6 +111,26 @@ The required DNS records to make it pass are:
 - `CF_API_KEY`: [Cloudflare API key][cloudflare-apikey-link] of the user that
  is managing the DNS records of the site using [Cloudflare][cloudflare-link].
 
+### **`freenom-autorenew`**
+
+Renews your free [Freenom][freenom-link] domains.
+
+You must set the environment variables `FREENOM_EMAIL` and `FREENOM_PASSWORD`
+to give permissions to this hook for entering in your Freenom account.
+
+#### Parameters
+
+- `-domain=DOMAIN`: Domain to renew. This parameter is optional, if you don't
+ specify it, the hook will renew all of the free domains registered in your
+ account.
+- `-period=DOMAIN`: Period for the new renovation time. This parameter is
+ optional, if you don't specify it the time will be one year (`12M`).
+
+#### Environment variables
+
+- `FREENOM_EMAIL`: Email of your Freenom account.
+- `FREENOM_PASSWORD`: Password of your Freenom account.
+
 ### **`root-editorconfig-required`**
 
 Check if your repository has an `.editorconfig` file and if this has a `root`
@@ -146,8 +166,9 @@ durations...
 [tests-image]: https://img.shields.io/github/workflow/status/mondeja/pre-commit-hooks/CI?logo=github&label=tests
 [tests-link]: https://github.com/mondeja/pre-commit-hooks/actions?query=workflow%CI
 
-[setup-py-upgrade-link]: https://github.com/asottile/setup-py-upgrade
 [cloudflare-link]: https://cloudflare.com
 [cloudflare-apikey-link]: https://support.cloudflare.com/hc/en-us/articles/200167836-Managing-API-Tokens-and-Keys
+[freenom-link]: https://www.freenom.com
 [gh-pages-link]: https://pages.github.com
 [pre-commit-po-hooks-link]: https://github.com/mondeja/pre-commit-po-hooks
+[setup-py-upgrade-link]: https://github.com/asottile/setup-py-upgrade
