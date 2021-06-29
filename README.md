@@ -134,6 +134,46 @@ to give permissions to this hook for entering in your Freenom account.
 - `FREENOM_EMAIL`: Email of your Freenom account.
 - `FREENOM_PASSWORD`: Password of your Freenom account.
 
+#### How to use standalone
+
+You can use this hook directly from the command line in an online workflow.
+
+```bash
+pip install mondeja-pre-commit-hooks requests
+```
+
+Use the CLI entry `freenom-autorenew-hook`. Example for Github Actions:
+
+```yaml
+name: freenom-autorenew
+
+on:
+  schedule:
+    - cron: 0 4 * * *  # every night at 04:00
+  workflow_dispatch:
+
+jobs:
+  freenom-autorenew:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+      - name: Install freenom-autorenew
+        run: pip install mondeja-pre-commit-hooks requests
+      - name: Run freenom-autorenew
+        run: freenom-autorenew-hook
+        env:
+          FREENOM_EMAIL: ${{ secrets.FREENOM_EMAIL }}
+          FREENOM_PASSWORD: ${{ secrets.FREENOM_PASSWORD }}
+```
+
+Don't forget to set the secrets `FREENOM_EMAIL` and `FREENOM_PASSWORD` with
+your credentials in the configuration of the repository
+(`Settings -> Secrets`).
+
 ### **`root-editorconfig-required`**
 
 Check if your repository has an `.editorconfig` file and if this has a `root`
