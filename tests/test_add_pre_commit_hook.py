@@ -64,8 +64,8 @@ from hooks.add_pre_commit_hook import add_pre_commit_hook
   - repo: https://github.com/mondeja/pre-commit-hooks
     rev: v1.0.0
     hooks:
-      - id: wavelint
       - id: dev-extras-required
+      - id: wavelint
 """,
             1,
             None,
@@ -90,6 +90,35 @@ from hooks.add_pre_commit_hook import add_pre_commit_hook
             0,
             None,
             id="dont-add-hook",
+        ),
+        pytest.param(
+            "https://github.com/mondeja/pre-commit-hooks",
+            "v1.5.1",
+            "dev-extras-required",
+            """repos:
+  - repo: https://github.com/mondeja/pre-commit-hooks
+    rev: v1.3.0
+    hooks:
+      - id: wavelint
+  - repo: https://github.com/asottile/setup-cfg-fmt
+    rev: v1.17.0
+    hooks:
+      - id: setup-cfg-fmt
+""",
+            """repos:
+  - repo: https://github.com/mondeja/pre-commit-hooks
+    rev: v1.5.1
+    hooks:
+      - id: dev-extras-required
+      - id: wavelint
+  - repo: https://github.com/asottile/setup-cfg-fmt
+    rev: v1.17.0
+    hooks:
+      - id: setup-cfg-fmt
+""",
+            1,
+            None,
+            id="add-hook-change-ref",
         ),
         pytest.param(
             "https://github.com/mondeja/pre-commit-hooks",

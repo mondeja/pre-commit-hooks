@@ -147,7 +147,7 @@ def add_pre_commit_hook(repo, rev, hook_id, quiet=False, dry_run=False):
     if not repo_in_config["hook_found"]:
         config_lines = config_content.splitlines(keepends=True)
 
-        _inside_repo, _inside_hooks, _hooks_indent = (False, False, None)
+        _inside_repo, _hooks_line, _hooks_indent = (False, None, None)
         _rev_line = None
         for i, line in enumerate(config_lines):
             if not _inside_repo:
@@ -156,7 +156,7 @@ def add_pre_commit_hook(repo, rev, hook_id, quiet=False, dry_run=False):
                 ):
                     _inside_repo = True
             else:
-                if _inside_hooks:
+                if _hooks_line is not None:
                     if _hooks_indent is None:
                         _hooks_indent = line.index("-") if "-" in line else None
 
@@ -164,7 +164,7 @@ def add_pre_commit_hook(repo, rev, hook_id, quiet=False, dry_run=False):
                         break
                 else:
                     if line.lstrip().startswith("hooks:"):
-                        _inside_hooks = True
+                        _hooks_line = i
                     elif line.lstrip().startswith("rev:"):
                         _rev_line = i
 
@@ -173,11 +173,13 @@ def add_pre_commit_hook(repo, rev, hook_id, quiet=False, dry_run=False):
             if n == _rev_line and not repo_in_config["same_rev"]:
                 new_lines.append(line.split(":")[0] + f": {rev}\n")
             else:
-                new_lines.append(line)
-            if n == i:
-                if not new_lines[-1].strip():
-                    new_lines = new_lines[:-1]
-                new_lines.append(" " * _hooks_indent + f"- id: {hook_id}\n")
+                if n == _hooks_line:
+                    if not new_lines[-1].strip():
+                        new_lines = new_lines[:-1]
+                    new_lines.append(line)
+                    new_lines.append(" " * _hooks_indent + f"- id: {hook_id}\n")
+                else:
+                    new_lines.append(line)
 
         if dry_run:
             if not quiet:

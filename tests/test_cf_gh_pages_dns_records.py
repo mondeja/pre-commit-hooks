@@ -2,12 +2,20 @@
 
 import contextlib
 import io
+import os
 
 import pytest
 
 from hooks.cf_gh_pages_dns_records import check_cloudflare_gh_pages_dns_records
 
 
+@pytest.mark.skipif(
+    not os.environ.get("CF_API_KEY"),
+    reason=(
+        "Cloudflare user API key defined in 'CF_API_KEY' environment variable"
+        " needed."
+    ),
+)
 @pytest.mark.parametrize("quiet", (True, False), ids=("quiet=True", "quiet=False"))
 @pytest.mark.parametrize(
     ("domain", "username", "expected_result", "expected_stderr"),
