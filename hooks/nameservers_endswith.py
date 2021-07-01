@@ -6,7 +6,10 @@ import sys
 import dns.resolver
 
 
-def nameservers_endswith(domain, nameserver, quiet=False):
+MAX_RETRY = 5
+
+
+def nameservers_endswith(domain, nameserver, quiet=False, _retry=1):
     """Check that the nameservers of a domain endswith a strip after stripping
     it all newlines and points.
 
@@ -31,15 +34,31 @@ def nameservers_endswith(domain, nameserver, quiet=False):
     """
     response = True
 
-    for ns in sorted(dns.resolver.resolve(domain, "NS")):
-        ns_ = ns.to_text().strip().strip(".")
-        if not ns_.endswith(nameserver):
+    try:
+        for ns in sorted(dns.resolver.resolve(domain, "NS")):
+            ns_ = ns.to_text().strip().strip(".")
+            if not ns_.endswith(nameserver):
+                if not quiet:
+                    sys.stderr.write(
+                        f"Found invalid nameserver '{ns_}' for domain '{domain}'.\n"
+                    )
+                response = False
+    except dns.exception.Timeout:
+        if _retry > MAX_RETRY:
             if not quiet:
                 sys.stderr.write(
-                    f"Found invalid nameserver '{ns_}' for domain '{domain}'.\n"
+                    "Maximum number of attempts retrieving nameserver DNS records.\n"
                 )
-            response = False
-    return response
+            return False
+
+        return nameservers_endswith(
+            domain,
+            nameserver,
+            quiet=quiet,
+            _retry=_retry + 1,
+        )
+    else:
+        return response
 
 
 def main():
