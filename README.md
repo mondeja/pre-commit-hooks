@@ -36,7 +36,10 @@ Add a pre-commit hook to your configuration file if is not already defined.
 - `-repo=URL` (*str*) Repository of the new hook.
 - `-rev=VERSION` (*str*) Version of the new hook.
 - `-hook=ID` (*str*) Identifier of the new hook.
- 
+
+> See [repo-stream][repo-stream-link] if you're wondering why you would need
+ to add a pre-commit hook from another hook.
+
 ### **`dev-extras-required`**
 
 > - Doesn't support `setup.py` files. Please, [migrate your setup configuration
@@ -167,7 +170,7 @@ jobs:
       - name: Install freenom-autorenew
         run: pip install mondeja-pre-commit-hooks requests
       - name: Run freenom-autorenew
-        run: freenom-autorenew-hook
+        run: freenom-autorenew
         env:
           FREENOM_EMAIL: ${{ secrets.FREENOM_EMAIL }}
           FREENOM_PASSWORD: ${{ secrets.FREENOM_PASSWORD }}
@@ -218,3 +221,5 @@ durations...
 [gh-pages-link]: https://pages.github.com
 [pre-commit-po-hooks-link]: https://github.com/mondeja/pre-commit-po-hooks
 [setup-py-upgrade-link]: https://github.com/asottile/setup-py-upgrade
+[repo-stream-link]: https://github.com/mondeja/repo-stream
+
