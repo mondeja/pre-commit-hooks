@@ -13,7 +13,6 @@
   hooks:
     - id: dev-extras-required
     - id: root-editorconfig-required
-    - id: freenom-autorenew
       args:
         - -domain=my-web.xyz
     - id: cloudflare-nameservers
@@ -117,69 +116,6 @@ The required DNS records to make it pass are:
 - `CF_API_KEY`: [Cloudflare API key][cloudflare-apikey-link] of the user that
  is managing the DNS records of the site using [Cloudflare][cloudflare-link].
 
-### **`freenom-autorenew`**
-
-Renews your free [Freenom][freenom-link] domains.
-
-> You must set the environment variables `FREENOM_EMAIL` and `FREENOM_PASSWORD`
- to give permissions to this hook for entering in your Freenom account.
-
-#### Parameters
-
-- `-domain=DOMAIN`: Domain to renew. This parameter is optional, if you don't
- specify it, the hook will renew all of the free domains registered in your
- account.
-- `-period=DOMAIN`: Period for the new renovation time. This parameter is
- optional, if you don't specify it the time will be one year (`12M`).
-
-#### Environment variables
-
-- `FREENOM_EMAIL`: Email of your Freenom account.
-- `FREENOM_PASSWORD`: Password of your Freenom account.
-
-#### How to use standalone
-
-You can use this script directly from the command line in an online workflow.
-
-```bash
-pip install mondeja-pre-commit-hooks requests
-```
-
-Use the CLI entry `freenom-autorenew` to execute it. You can check the
-documentation for the script executing `frenom-autorenew -h`.
-
-Configuration example for Github Actions:
-
-```yaml
-name: freenom-autorenew
-
-on:
-  schedule:
-    - cron: 0 4 * * *  # every night at 04:00
-  workflow_dispatch:
-
-jobs:
-  freenom-autorenew:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.x
-      - name: Install freenom-autorenew
-        run: pip install mondeja-pre-commit-hooks requests
-      - name: Run freenom-autorenew
-        run: freenom-autorenew
-        env:
-          FREENOM_EMAIL: ${{ secrets.FREENOM_EMAIL }}
-          FREENOM_PASSWORD: ${{ secrets.FREENOM_PASSWORD }}
-```
-
-Don't forget to set the secrets `FREENOM_EMAIL` and `FREENOM_PASSWORD` with
-your credentials in the configuration of the repository
-(`Settings -> Secrets`).
-
 ### **`root-editorconfig-required`**
 
 Check if your repository has an `.editorconfig` file and if this has a `root`
@@ -189,6 +125,8 @@ directive defined as `true` before section headers.
 
 Check if your WAVE files have the correct number of channels, frame rate,
 durations...
+
+You need to install 
 
 #### Parameters
 
@@ -217,7 +155,6 @@ durations...
 
 [cloudflare-link]: https://cloudflare.com
 [cloudflare-apikey-link]: https://support.cloudflare.com/hc/en-us/articles/200167836-Managing-API-Tokens-and-Keys
-[freenom-link]: https://www.freenom.com
 [gh-pages-link]: https://pages.github.com
 [pre-commit-po-hooks-link]: https://github.com/mondeja/pre-commit-po-hooks
 [setup-py-upgrade-link]: https://github.com/asottile/setup-py-upgrade

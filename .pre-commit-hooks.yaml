@@ -38,15 +38,6 @@
   language: python
   pass_filenames: false
   always_run: true
-- id: freenom-autorenew
-  name: freenom-autorenew
-  entry: freenom-autorenew
-  description: Renews the free domains of your Freenom account
-  language: python
-  always_run: true
-  pass_filenames: false
-  additional_dependencies:
-    - requests
 - id: root-editorconfig-required
   name: root-editorconfig-required
   entry: root-editorconfig-required-hook
