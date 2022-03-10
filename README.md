@@ -9,7 +9,7 @@
 
 ```yaml
 - repo: https://github.com/mondeja/pre-commit-hooks
-  rev: v1.5.3
+  rev: v1.7.0
   hooks:
     - id: dev-extras-required
     - id: root-editorconfig-required
@@ -41,10 +41,8 @@ Add a pre-commit hook to your configuration file if is not already defined.
 
 ### **`dev-extras-required`**
 
-> - Doesn't support `setup.py` files. Please, [migrate your setup configuration
- to `setup.cfg` format][setup-py-upgrade-link].
-> - Support for `pyproject.toml` files is limited to printing errors, automatic
- file rewriting is not performed.
+> - Support for `pyproject.toml` and `setup.py` files is limited to
+ printing errors, automatic file rewriting is not performed.
 
 Check if your development dependencies contains all other extras requirements.
 If an extra requirement is defined in other extra group than your development
@@ -157,6 +155,5 @@ You need to install
 [cloudflare-apikey-link]: https://support.cloudflare.com/hc/en-us/articles/200167836-Managing-API-Tokens-and-Keys
 [gh-pages-link]: https://pages.github.com
 [pre-commit-po-hooks-link]: https://github.com/mondeja/pre-commit-po-hooks
-[setup-py-upgrade-link]: https://github.com/asottile/setup-py-upgrade
 [repo-stream-link]: https://github.com/mondeja/repo-stream
 
