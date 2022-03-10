@@ -207,6 +207,9 @@ def check_setup_py(
     """
     import ast
 
+    # Compatibility with Python < 3.8
+    ast_str_value_attr = "value" if sys.version_info < (3, 8) else "s"
+
     with open(filename) as f:
         content = f.read()
 
@@ -226,7 +229,7 @@ def check_setup_py(
         def _extract_extras(self, node):
             extras = {}
 
-            keys = [const.value for const in node.value.keys]
+            keys = [getattr(const, ast_str_value_attr) for const in node.value.keys]
             for i in range(len(keys)):
                 values = []
                 for elt in node.value.values[i].elts:
@@ -258,7 +261,7 @@ def check_setup_py(
     setup_py_tree = ast.parse(ast.parse(content))
     visitor = ExtraRequirementsExtractor()
 
-    # Useful for debugging
+    # Useful for debugging (Python >= 3.9 needed)
     # print(ast.dump(setup_py_tree, indent=4))
 
     visitor.visit(setup_py_tree)
