@@ -722,10 +722,8 @@ setup(
     },
 )
 """,
-            1,
-            [
-                ("Found not constant extra requirement 'EXTRA' at '{filename}'"),
-            ],
+            0,
+            [],
             id="not constant",
         ),
     ),
