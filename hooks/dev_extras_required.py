@@ -9,6 +9,10 @@ import configparser
 import os
 import sys
 
+import ast
+from pprint import pprint
+pprint(dir(ast.Name))
+
 
 def check_setup_cfg(
     filename="setup.cfg",
@@ -241,7 +245,7 @@ def check_setup_py(
                     if isinstance(elt, ast.Constant):
                         values.append(elt.value)
                     else:
-                        req = elt.id if isinstance(elt, ast_Name) else str(elt)
+                        req = elt.id if isinstance(elt, ast.Name) else str(elt)
                         values.append(req)
                 extras[keys[i]] = values
             return extras
