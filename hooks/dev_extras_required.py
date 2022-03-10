@@ -216,6 +216,7 @@ def check_setup_py(
 
             self.extras = None
             self.exitcode = 0
+            self.not_constant_extras = []
 
         def generic_visit(self, node):
             if isinstance(node, ast.keyword) and node.arg == "extras_require":
@@ -232,6 +233,10 @@ def check_setup_py(
                 for elt in node.value.values[i].elts:
                     if isinstance(elt, ast.Constant):
                         values.append(elt.value)
+                    else:
+                        req = elt.id if isinstance(elt, ast.Name) else str(elt)
+                        self.not_constant_extras.append(req)
+                        values.append(req)
                 extras[keys[i]] = values
             return extras
 
@@ -244,22 +249,33 @@ def check_setup_py(
                         " extras groups.\n"
                     )
                 self.exitcode = 1
-            elif dev_extra_name not in extras:
-                sys.stderr.write(f"Extra requirements not found in file '{filename}'\n")
-                self.exitcode = 1
             elif not extras:
                 sys.stderr.write(
-                    f"Empty extra requirements found in file '{filename}'\n"
+                    f"Empty extra requirements group found in file '{filename}'\n"
                 )
                 self.exitcode = 1
+
             return extras
 
     setup_py_tree = ast.parse(ast.parse(content))
     visitor = ExtraRequirementsExtractor()
+
+    # Useful for debugging
     # print(ast.dump(setup_py_tree, indent=4))
+
     visitor.visit(setup_py_tree)
+
     if visitor.exitcode == 1:
         return visitor.exitcode
+    elif visitor.extras is None:
+        sys.stderr.write(f"Extra requirements not found in file '{filename}'\n")
+        return 1
+    elif visitor.not_constant_extras:
+        for req in visitor.not_constant_extras:
+            sys.stderr.write(
+                f"Found not constant extra requirement '{req}' at '{filename}'\n"
+            )
+        return 1
 
     dev_extra_requirements, other_extra_requirements = ([], [])
 

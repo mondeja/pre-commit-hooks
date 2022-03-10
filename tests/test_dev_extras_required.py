@@ -618,9 +618,7 @@ setup(
         "pgsql": ["psycopg2"],
         "test": ["pytest", "pytest-cov", "pytest-xdist"],
     },
-    setup_requires=[
-        "Cython"
-    ]
+    setup_requires=["Cython"]
 )
 """,
             1,
@@ -652,19 +650,83 @@ setup(
     name="foo",
     zip_safe=False,
     extras_require={},
-    setup_requires=[
-        "Cython"
-    ]
+    setup_requires=["Cython"]
 )
 """,
             1,
             [
-                (
-                    "Requirement 'pytest' must be added to"
-                    " '{dev_extra_name}' extra group at '{filename}'"
-                ),
+                ("Empty extra requirements group found in file '{filename}'"),
             ],
             id="empty extras_require",
+        ),
+        pytest.param(
+            """from setuptools import setup
+
+setup(
+    version="0.0.1",
+    name="foo",
+    zip_safe=False,
+    setup_requires=["Cython"]
+)
+""",
+            1,
+            [
+                "Extra requirements not found in file '{filename}'",
+            ],
+            id="not extras_require",
+        ),
+        pytest.param(
+            """from setuptools import setup
+
+setup(
+    version="0.0.1",
+    name="foo",
+    zip_safe=False,
+    setup_requires=["Cython"],
+    extras_require={
+        "{dev_extra_name}": [
+            "foo==4.9.5a10",
+            "bar",
+            "baz==3.0.2",
+            "psycopg2==6.7.8",
+            "pytest",
+            "pytest-cov",
+            "pytest-xdist",
+        ],
+        "pgsql": ["psycopg2==6.7.8"],
+        "test": ["pytest", "pytest-cov", "pytest-xdist"],
+    },
+)
+""",
+            0,
+            [],
+            id="correct",
+        ),
+        pytest.param(
+            """from setuptools import setup
+
+EXTRA = "pytest"
+
+setup(
+    version="0.0.1",
+    name="foo",
+    zip_safe=False,
+    setup_requires=["Cython"],
+    extras_require={
+        "{dev_extra_name}": [
+            EXTRA,
+            "pytest-cov",
+            "pytest-xdist",
+        ],
+        "test": [EXTRA, "pytest-cov", "pytest-xdist"],
+    },
+)
+""",
+            1,
+            [
+                ("Found not constant extra requirement 'EXTRA' at '{filename}'"),
+            ],
+            id="not constant",
         ),
     ),
 )
