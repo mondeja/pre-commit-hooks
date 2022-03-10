@@ -208,7 +208,12 @@ def check_setup_py(
     import ast
 
     # Compatibility with Python < 3.8
-    ast_str_value_attr = "s" if sys.version_info < (3, 8) else "value"
+    if sys.version_info < (3, 8):
+        ast_str_value_attr = "s"
+        ast_Name = ast.NameConstant
+    else:
+        ast_str_value_attr = "value"
+        ast_Name = ast.Name
 
     with open(filename) as f:
         content = f.read()
@@ -236,7 +241,7 @@ def check_setup_py(
                     if isinstance(elt, ast.Constant):
                         values.append(elt.value)
                     else:
-                        req = elt.id if isinstance(elt, ast.Name) else str(elt)
+                        req = elt.id if isinstance(elt, ast_Name) else str(elt)
                         values.append(req)
                 extras[keys[i]] = values
             return extras
