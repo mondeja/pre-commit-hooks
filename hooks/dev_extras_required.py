@@ -61,7 +61,7 @@ def check_setup_cfg(
             if dry_run:
                 if not quiet:
                     sys.stderr.write(
-                        f"Requirement '{requirement}' would be added to"
+                        f"Requirement '{requirement}' must be added to"
                         f" '{dev_extra_name}' extra group at '{filename}'\n"
                     )
             else:
@@ -148,7 +148,7 @@ def check_pyproject_toml(
                 # if dry_run:
                 if not quiet:
                     sys.stderr.write(
-                        f"Requirement '{requirement}' would be added to"
+                        f"Requirement '{requirement}' must be added to"
                         f" '{dev_extra_name}' extra group at '{filename}'\n"
                     )
                 """
@@ -183,6 +183,106 @@ def check_pyproject_toml(
     return exitcode
 
 
+def check_setup_py(
+    filename="pyproject.toml",
+    dev_extra_name="dev",
+    quiet=False,
+):
+    """Check that all other extra requirements than development ones are
+    included in development extra group in a ``setup.py`` configuration
+    file. Only works if the groups are explicitly defined constants.
+
+    Parameters
+    ----------
+
+    filename : str, optional
+      Path to the file to check.
+
+    dev_extra_name : str, optional
+      Development extra requirements group name.
+
+    quiet : bool, optional
+      Enabled, don't print output to stderr when a requirement is not
+      defined in development extra requirements group.
+    """
+    import ast
+
+    with open(filename) as f:
+        content = f.read()
+
+    class ExtraRequirementsExtractor(ast.NodeVisitor):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+
+            self.extras = None
+            self.exitcode = 0
+
+        def generic_visit(self, node):
+            if isinstance(node, ast.keyword) and node.arg == "extras_require":
+                if node.value:
+                    self.extras = self._check_extras(self._extract_extras(node))
+            ast.NodeVisitor.generic_visit(self, node)
+
+        def _extract_extras(self, node):
+            extras = {}
+
+            keys = [const.value for const in node.value.keys]
+            for i in range(len(keys)):
+                values = []
+                for elt in node.value.values[i].elts:
+                    if isinstance(elt, ast.Constant):
+                        values.append(elt.value)
+                extras[keys[i]] = values
+            return extras
+
+        def _check_extras(self, extras):
+            if self.extras is not None:
+                if not quiet:
+                    sys.stderr.write(
+                        "Multiple 'extras_require' keywords found"
+                        f" in '{filename}'. Impossible to resolve"
+                        " extras groups.\n"
+                    )
+                self.exitcode = 1
+            elif dev_extra_name not in extras:
+                sys.stderr.write(f"Extra requirements not found in file '{filename}'\n")
+                self.exitcode = 1
+            elif not extras:
+                sys.stderr.write(
+                    f"Empty extra requirements found in file '{filename}'\n"
+                )
+                self.exitcode = 1
+            return extras
+
+    setup_py_tree = ast.parse(ast.parse(content))
+    visitor = ExtraRequirementsExtractor()
+    # print(ast.dump(setup_py_tree, indent=4))
+    visitor.visit(setup_py_tree)
+    if visitor.exitcode == 1:
+        return visitor.exitcode
+
+    dev_extra_requirements, other_extra_requirements = ([], [])
+
+    for extra, requirements in visitor.extras.items():
+        if extra == dev_extra_name:
+            dev_extra_requirements.extend(requirements)
+        else:
+            other_extra_requirements.extend(requirements)
+
+    exitcode = 0
+
+    for requirement in other_extra_requirements:
+        if requirement not in dev_extra_requirements:
+            exitcode = 1
+
+            if not quiet:
+                sys.stderr.write(
+                    f"Requirement '{requirement}' must be added to"
+                    f" '{dev_extra_name}' extra group at '{filename}'\n"
+                )
+    return exitcode
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("filenames", nargs="*")
@@ -202,7 +302,7 @@ def main():
         required=False,
         default="dev",
         dest="extra_name",
-        help="Path to the 'setup.cfg' file.",
+        help="Development extra group name.",
     )
     parser.add_argument(
         "-setup-cfg",
@@ -224,9 +324,19 @@ def main():
         dest="pyproject_toml",
         help="Path to the 'pyproject.toml' file.",
     )
+    parser.add_argument(
+        "-setup-py",
+        "--setup-py",
+        type=str,
+        metavar="FILEPATH",
+        required=False,
+        default="setup.py",
+        dest="setup_py",
+        help="Path to the 'setup.py' file.",
+    )
     args = parser.parse_args()
 
-    filenames = (args.setup_cfg, args.pyproject_toml)
+    filenames = (args.setup_cfg, args.pyproject_toml, args.setup_py)
     if not any([os.path.isfile(filename) for filename in filenames]):
         for filename in filenames:
             sys.stderr.write(f"'{filename}' file not found\n")
@@ -239,9 +349,15 @@ def main():
             quiet=args.quiet,
             dry_run=args.dry_run,
         )
-    else:
+    elif os.path.isfile(args.pyproject_toml):
         exitcode = check_pyproject_toml(
             filename=args.pyproject_toml,
+            dev_extra_name=args.extra_name,
+            quiet=args.quiet,
+        )
+    else:
+        exitcode = check_setup_py(
+            filename=args.setup_py,
             dev_extra_name=args.extra_name,
             quiet=args.quiet,
         )

@@ -7,7 +7,59 @@ import tempfile
 
 import pytest
 
-from hooks.dev_extras_required import check_pyproject_toml, check_setup_cfg
+from hooks.dev_extras_required import (
+    check_pyproject_toml,
+    check_setup_cfg,
+    check_setup_py,
+)
+
+
+def _assert_implementation(
+    input_content,
+    expected_exitcode,
+    expected_stderr_lines,
+    dev_extra_name,
+    filename,
+    quiet,
+    check_function,
+    dry_run=None,
+    expected_result=None,
+):
+    with tempfile.TemporaryDirectory() as dirname:
+        filename = os.path.join(dirname, filename)
+
+        with open(filename, "w") as f:
+            f.write(input_content.replace("{dev_extra_name}", dev_extra_name))
+
+        stderr = io.StringIO()
+        with contextlib.redirect_stderr(stderr):
+            kwargs = {} if dry_run is None else {"dry_run": dry_run}
+
+            exitcode = check_function(
+                filename=filename,
+                dev_extra_name=dev_extra_name,
+                quiet=quiet,
+                **kwargs,
+            )
+
+        assert exitcode == expected_exitcode
+
+        if dry_run in {True, None}:
+            if not quiet:
+                expected_stderr_lines = [
+                    line.replace("{dev_extra_name}", dev_extra_name).replace(
+                        "{filename}", filename
+                    )
+                    for line in expected_stderr_lines
+                ]
+
+                for line in stderr.getvalue().splitlines():
+                    assert line in expected_stderr_lines
+        else:
+            with open(filename) as f:
+                result = f.read()
+
+            assert result == expected_result.replace("{dev_extra_name}", dev_extra_name)
 
 
 @pytest.mark.parametrize(
@@ -116,15 +168,15 @@ universal = True
                 1,
                 [
                     (
-                        "Requirement 'pytest==6.2.0' would be added to"
+                        "Requirement 'pytest==6.2.0' must be added to"
                         " '{dev_extra_name}' extra group at '{filename}'"
                     ),
                     (
-                        "Requirement 'pytest-cov==2.12.1' would be added to"
+                        "Requirement 'pytest-cov==2.12.1' must be added to"
                         " '{dev_extra_name}' extra group at '{filename}'"
                     ),
                     (
-                        "Requirement 'waves==0.2.4' would be added to"
+                        "Requirement 'waves==0.2.4' must be added to"
                         " '{dev_extra_name}' extra group at '{filename}'"
                     ),
                 ],
@@ -212,7 +264,7 @@ universal = True
                 1,
                 [
                     (
-                        "Requirement 'pytest==6.2.0' would be added to"
+                        "Requirement 'pytest==6.2.0' must be added to"
                         " '{dev_extra_name}' extra group at '{filename}'"
                     ),
                 ],
@@ -309,44 +361,22 @@ def test_check_setup_cfg(
     expected_result,
     expected_exitcode,
     expected_stderr_lines,
-    filename,
     dev_extra_name,
+    filename,
     dry_run,
     quiet,
 ):
-    with tempfile.TemporaryDirectory() as dirname:
-        filename = os.path.join(dirname, filename)
-
-        with open(filename, "w") as f:
-            f.write(input_content.replace("{dev_extra_name}", dev_extra_name))
-
-        stderr = io.StringIO()
-        with contextlib.redirect_stderr(stderr):
-            exitcode = check_setup_cfg(
-                filename=filename,
-                dev_extra_name=dev_extra_name,
-                quiet=quiet,
-                dry_run=dry_run,
-            )
-
-        assert exitcode == expected_exitcode
-
-        if dry_run:
-            if not quiet:
-                expected_stderr_lines = [
-                    line.replace("{dev_extra_name}", dev_extra_name).replace(
-                        "{filename}", filename
-                    )
-                    for line in expected_stderr_lines
-                ]
-
-                for line in stderr.getvalue().splitlines():
-                    assert line in expected_stderr_lines
-        else:
-            with open(filename) as f:
-                result = f.read()
-
-            assert result == expected_result.replace("{dev_extra_name}", dev_extra_name)
+    _assert_implementation(
+        input_content,
+        expected_exitcode,
+        expected_stderr_lines,
+        dev_extra_name,
+        filename,
+        quiet,
+        check_function=check_setup_cfg,
+        dry_run=dry_run,
+        expected_result=expected_result,
+    )
 
 
 @pytest.mark.parametrize(
@@ -414,31 +444,31 @@ exclude = [
             1,
             [
                 (
-                    "Requirement 'pytest' would be added to"
+                    "Requirement 'pytest' must be added to"
                     " '{dev_extra_name}' extra group at '{filename}'"
                 ),
                 (
-                    "Requirement 'pytest-cov' would be added to"
+                    "Requirement 'pytest-cov' must be added to"
                     " '{dev_extra_name}' extra group at '{filename}'"
                 ),
                 (
-                    "Requirement 'pytest-xdist' would be added to"
+                    "Requirement 'pytest-xdist' must be added to"
                     " '{dev_extra_name}' extra group at '{filename}'"
                 ),
                 (
-                    "Requirement 'myst-parser' would be added to"
+                    "Requirement 'myst-parser' must be added to"
                     " '{dev_extra_name}' extra group at '{filename}'"
                 ),
                 (
-                    "Requirement 'sphinx-copybutton' would be added to"
+                    "Requirement 'sphinx-copybutton' must be added to"
                     " '{dev_extra_name}' extra group at '{filename}'"
                 ),
                 (
-                    "Requirement 'sphinx-inline-tabs' would be added to"
+                    "Requirement 'sphinx-inline-tabs' must be added to"
                     " '{dev_extra_name}' extra group at '{filename}'"
                 ),
                 (
-                    "Requirement 'docutils != 0.17' would be added to"
+                    "Requirement 'docutils != 0.17' must be added to"
                     " '{dev_extra_name}' extra group at '{filename}'"
                 ),
             ],
@@ -509,11 +539,11 @@ pgsql = ["psycopg2"]
             1,
             [
                 (
-                    "Requirement 'mysqlclient' would be added to"
+                    "Requirement 'mysqlclient' must be added to"
                     " '{dev_extra_name}' extra group at '{filename}'"
                 ),
                 (
-                    "Requirement 'psycopg2' would be added to"
+                    "Requirement 'psycopg2' must be added to"
                     " '{dev_extra_name}' extra group at '{filename}'"
                 ),
             ],
@@ -551,29 +581,107 @@ def test_check_pyproject_toml(
     filename,
     quiet,
 ):
-    with tempfile.TemporaryDirectory() as dirname:
-        filename = os.path.join(dirname, filename)
+    _assert_implementation(
+        input_content,
+        expected_exitcode,
+        expected_stderr_lines,
+        dev_extra_name,
+        filename,
+        quiet,
+        check_function=check_pyproject_toml,
+    )
 
-        with open(filename, "w") as f:
-            f.write(input_content.replace("{dev_extra_name}", dev_extra_name))
 
-        stderr = io.StringIO()
-        with contextlib.redirect_stderr(stderr):
-            exitcode = check_pyproject_toml(
-                filename=filename,
-                dev_extra_name=dev_extra_name,
-                quiet=quiet,
-            )
+@pytest.mark.parametrize(
+    "filename",
+    ("setup.py", "_setup.py"),
+    ids=("filename=setup.py", "filename=_setup.py"),
+)
+@pytest.mark.parametrize("quiet", (False, True), ids=("quiet=False", "quiet=True"))
+@pytest.mark.parametrize(
+    "dev_extra_name",
+    ("dev", "development"),
+    ids=("dev_extra_name=dev", "dev_extra_name=development"),
+)
+@pytest.mark.parametrize(
+    ("input_content", "expected_exitcode", "expected_stderr_lines"),
+    (
+        pytest.param(
+            """from setuptools import setup
 
-        assert exitcode == expected_exitcode
+setup(
+    version="0.0.1",
+    name="foo",
+    zip_safe=False,
+    extras_require={
+        "{dev_extra_name}": ["foo==4.9.5a10", "bar", "baz==3.0.2"],
+        "pgsql": ["psycopg2"],
+        "test": ["pytest", "pytest-cov", "pytest-xdist"],
+    },
+    setup_requires=[
+        "Cython"
+    ]
+)
+""",
+            1,
+            [
+                (
+                    "Requirement 'pytest' must be added to"
+                    " '{dev_extra_name}' extra group at '{filename}'"
+                ),
+                (
+                    "Requirement 'pytest-cov' must be added to"
+                    " '{dev_extra_name}' extra group at '{filename}'"
+                ),
+                (
+                    "Requirement 'pytest-xdist' must be added to"
+                    " '{dev_extra_name}' extra group at '{filename}'"
+                ),
+                (
+                    "Requirement 'psycopg2' must be added to"
+                    " '{dev_extra_name}' extra group at '{filename}'"
+                ),
+            ],
+            id="test + pgsql -> dev",
+        ),
+        pytest.param(
+            """from setuptools import setup
 
-        if not quiet:
-            expected_stderr_lines = [
-                line.replace("{dev_extra_name}", dev_extra_name).replace(
-                    "{filename}", filename
-                )
-                for line in expected_stderr_lines
-            ]
-
-            for line in stderr.getvalue().splitlines():
-                assert line in expected_stderr_lines
+setup(
+    version="0.0.1",
+    name="foo",
+    zip_safe=False,
+    extras_require={},
+    setup_requires=[
+        "Cython"
+    ]
+)
+""",
+            1,
+            [
+                (
+                    "Requirement 'pytest' must be added to"
+                    " '{dev_extra_name}' extra group at '{filename}'"
+                ),
+            ],
+            id="empty extras_require",
+        ),
+    ),
+)
+def test_check_setup_py(
+    input_content,
+    expected_exitcode,
+    expected_stderr_lines,
+    dev_extra_name,
+    filename,
+    quiet,
+):
+    _assert_implementation(
+        input_content,
+        expected_exitcode,
+        expected_stderr_lines,
+        dev_extra_name,
+        filename,
+        quiet,
+        check_function=check_setup_py,
+    )
