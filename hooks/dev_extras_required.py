@@ -9,10 +9,6 @@ import configparser
 import os
 import sys
 
-import ast
-from pprint import pprint
-pprint(dir(ast.Name))
-
 
 def check_setup_cfg(
     filename="setup.cfg",
@@ -212,12 +208,7 @@ def check_setup_py(
     import ast
 
     # Compatibility with Python < 3.8
-    if sys.version_info < (3, 8):
-        ast_str_value_attr = "s"
-        ast_Name = ast.NameConstant
-    else:
-        ast_str_value_attr = "value"
-        ast_Name = ast.Name
+    ast_str_value_attr = "s" if sys.version_info < (3, 8) else "value"
 
     with open(filename) as f:
         content = f.read()

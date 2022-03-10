@@ -3,6 +3,7 @@
 import contextlib
 import io
 import os
+import sys
 import tempfile
 
 import pytest
@@ -764,6 +765,9 @@ def test_check_setup_py(
     filename,
     quiet,
 ):
+    # skip on Python 3.7 because constant ids can't be retrieved
+    if "EXTRA" in input_content and sys.version_info < (3, 8):
+        pytest.skip()
     _assert_implementation(
         input_content,
         expected_exitcode,
