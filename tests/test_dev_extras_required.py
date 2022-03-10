@@ -724,7 +724,35 @@ setup(
 """,
             0,
             [],
-            id="not constant",
+            id="not constant (correct)",
+        ),
+        pytest.param(
+            """from setuptools import setup
+
+EXTRA = "pytest"
+
+setup(
+    version="0.0.1",
+    name="foo",
+    zip_safe=False,
+    setup_requires=["Cython"],
+    extras_require={
+        "{dev_extra_name}": [
+            "pytest-cov",
+            "pytest-xdist",
+        ],
+        "test": [EXTRA, "pytest-cov", "pytest-xdist"],
+    },
+)
+""",
+            1,
+            [
+                (
+                    "Requirement 'EXTRA' must be added to '{dev_extra_name}'"
+                    " extra group at '{filename}'"
+                )
+            ],
+            id="not constant (not found)",
         ),
     ),
 )
