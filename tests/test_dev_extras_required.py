@@ -593,6 +593,10 @@ def test_check_pyproject_toml(
     )
 
 
+@pytest.mark.skipif(
+    sys.version_info < (3, 8),
+    "'dev-extras-required' hook with setup.py files only supports Python >= 3.8",
+)
 @pytest.mark.parametrize(
     "filename",
     ("setup.py", "_setup.py"),
@@ -765,9 +769,6 @@ def test_check_setup_py(
     filename,
     quiet,
 ):
-    # skip on Python 3.7 because constant ids can't be retrieved
-    if "EXTRA" in input_content and sys.version_info < (3, 8):
-        pytest.skip()
     _assert_implementation(
         input_content,
         expected_exitcode,

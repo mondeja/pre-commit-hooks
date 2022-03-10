@@ -207,8 +207,13 @@ def check_setup_py(
     """
     import ast
 
-    # Compatibility with Python < 3.8
-    ast_str_value_attr = "s" if sys.version_info < (3, 8) else "value"
+    # Not compatible with Python < 3.8
+    if sys.version_info < (3, 8):  # pragma: no cover
+        sys.stderr.write(
+            "'dev-extras-required' hook for 'setup.py' files only supports"
+            " Python >= 3.8\n"
+        )
+        return 1
 
     with open(filename) as f:
         content = f.read()
@@ -229,7 +234,7 @@ def check_setup_py(
         def _extract_extras(self, node):
             extras = {}
 
-            keys = [getattr(const, ast_str_value_attr) for const in node.value.keys]
+            keys = [const.value for const in node.value.keys]
             for i in range(len(keys)):
                 values = []
                 for elt in node.value.values[i].elts:
