@@ -595,7 +595,7 @@ def test_check_pyproject_toml(
 
 @pytest.mark.skipif(
     sys.version_info < (3, 8),
-    "'dev-extras-required' hook with setup.py files only supports Python >= 3.8",
+    reason="'dev-extras-required' hook with setup.py files only supports Python >= 3.8",
 )
 @pytest.mark.parametrize(
     "filename",
