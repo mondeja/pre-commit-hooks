@@ -229,7 +229,10 @@ def check_setup_py(
         def _extract_extras(self, node):
             extras = {}
 
-            keys = [getattr(const, ast_str_value_attr) for const in node.value.keys]
+            keys = [
+                getattr(const, ast_str_value_attr)
+                for const in getattr(node, ast_str_value_attr).keys
+            ]
             for i in range(len(keys)):
                 values = []
                 for elt in node.value.values[i].elts:
