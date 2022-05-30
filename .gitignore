@@ -3,6 +3,7 @@
 /docs/_build/
 /dev.md
 __dev__.py
+.vscode
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

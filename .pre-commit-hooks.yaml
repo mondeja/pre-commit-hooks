@@ -31,6 +31,9 @@
   description: Check if your development dependencies contains all other extras requirements
   files: '(setup\.cfg)|(pyproject\.toml)|(setup\.py)'
   language: python
+- id: file-check-lines
+  entry: file-check-lines-hook
+  description: Check that a set of lines exists in a file
 - id: nameservers-endswith
   name: nameservers-endswith
   entry: nameservers-endswith-hook
