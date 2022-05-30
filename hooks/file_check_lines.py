@@ -12,21 +12,11 @@ def smart_quoted(value):
     )
 
 
-def normalize_lines(lines):
-    normalized_lines = []
-    for line in lines:
-        if line:
-            normalized_lines.append(line.strip("\r\n"))
-    normalized_lines.sort()
-    return normalized_lines
-
-
 def file_check_lines(filename, expected_lines, quiet=False):
-
     with open(filename, encoding="utf-8") as f:
         lines = f.read().splitlines()
 
-    expected_lines = normalize_lines(expected_lines)
+    expected_lines = [line.strip("\r\n") for line in expected_lines]
     if not expected_lines:
         sys.stderr.write("Any valid non empty expected line passed as argument\n")
         return 1
