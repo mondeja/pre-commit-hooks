@@ -16,7 +16,7 @@ def file_check_lines(filename, expected_lines, quiet=False):
     with open(filename, encoding="utf-8") as f:
         lines = f.read().splitlines()
 
-    expected_lines = [line.strip("\r\n") for line in expected_lines]
+    expected_lines = [line.strip("\r\n") for line in expected_lines if line]
     if not expected_lines:
         sys.stderr.write("Any valid non empty expected line passed as argument\n")
         return 1
