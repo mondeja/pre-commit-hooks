@@ -38,11 +38,10 @@ def file_check_lines(filename, expected_lines, quiet=False):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-q", "--quiet", action="store_true", help="Supress output")
-    parser.add_argument("filename", help="Filename to check for content")
-    parser.add_argument("lines", nargs="+", help="Lines to check")
+    parser.add_argument("lines_files", nargs='+', help="Lines and a filename to check for content")
     args = parser.parse_args()
 
-    return file_check_lines(args.filename, args.lines, quiet=args.quiet)
+    return file_check_lines(args.lines_files[-1], args.lines_files[:-1], quiet=args.quiet)
 
 
 if __name__ == "__main__":
