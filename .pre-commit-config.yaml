@@ -4,10 +4,15 @@ repos:
     hooks:
       - id: setup-cfg-fmt
   - repo: https://github.com/mondeja/pre-commit-hooks
-    rev: v1.7.0
+    rev: file-check-lines
     hooks:
       - id: root-editorconfig-required
       - id: dev-extras-required
+      - id: file-check-lines
+        files: ^MANIFEST.in$
+        args:
+          - include README.md
+          - include LICENSE
   - repo: https://github.com/asottile/pyupgrade
     rev: v2.32.1
     hooks:
