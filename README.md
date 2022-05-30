@@ -9,7 +9,7 @@
 
 ```yaml
 - repo: https://github.com/mondeja/pre-commit-hooks
-  rev: v1.7.0
+  rev: v1.8.0
   hooks:
     - id: dev-extras-required
     - id: root-editorconfig-required
@@ -22,6 +22,11 @@
       args:
         - -domain=my-web.xyz
         - -username=my_gh_username
+    - id: file-check-lines
+      files: ^MANIFEST.in$
+      args:
+        - include README.md
+        - include LICENSE
 ```
 
 ## Hooks
@@ -30,7 +35,7 @@
 
 Add a pre-commit hook to your configuration file if is not already defined.
 
-#### Parameters
+#### Arguments
 
 - `-repo=URL` (*str*) Repository of the new hook.
 - `-rev=VERSION` (*str*) Version of the new hook.
@@ -53,7 +58,7 @@ This is useful if you want to execute `python -m pip install -e .[dev]` to
 install all the optional requirements of the package, so if you add a new
 requirement to another groups, it will be added to development requirements.
 
-#### Parameters
+#### Arguments
 
 - `-extra=NAME` (*str*): Name for your development requirements extra group
  (as default `dev`).
@@ -64,13 +69,23 @@ requirement to another groups, it will be added to development requirements.
  mandatory if the extras requirements are defined in a `pyproject.toml` file
  and this is located in another directory than the current one.
 
+### **`file-check-lines`**
+
+Check that a set of lines are included in a file. The file path must
+be passed in the `files` argument and only one can match against the
+regex.
+
+The positional arguments must be the lines to check for inclusion in
+the file, without newlines characters. Empty lines and lines composed
+by newlines characters will be ignored.
+
 ### **`nameservers-endswith`**
 
 Check that the nameservers of a domain ends with a string or raise an error.
 You can use it to check if a site like Clouflare is managing a domain using
 `-nameserver=cloudflare.com`.
 
-#### Parameters
+#### Arguments
 
 - `-domain=DOMAIN` (*str*): Domain name whose nameservers will be checked.
 - `-nameserver=NAMESERVER` (*str*): String to end the domain name servers in.
@@ -80,7 +95,7 @@ You can use it to check if a site like Clouflare is managing a domain using
 Check that [Cloudflare][cloudflare-link] is handling the nameservers of a
 domain.
 
-#### Parameters
+#### Arguments
 
 - `-domain=DOMAIN` (*str*): Domain name whose nameservers will be checked.
 
@@ -102,7 +117,7 @@ The required DNS records to make it pass are:
 | A | {domain} | 185.199.111.153 |
 | CNAME | www | {username}.github.io |
 
-#### Parameters
+#### Arguments
 
 - `-domain=DOMAIN`: Domain managed by Cloudflare whose DNS records will be
  checked.
@@ -126,7 +141,7 @@ durations...
 
 You need to install 
 
-#### Parameters
+#### Arguments
 
 - `-nchannels=N` (*int*): Number of channels that your sounds must have.
 - `-sample-width=N` (*int*): Number of bytes that your sounds must have.
