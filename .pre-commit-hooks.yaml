@@ -37,6 +37,7 @@
   name: file-check-lines
   entry: file-check-lines-hook
   description: Check that a set of lines exists in a file
+  language: python
 - id: nameservers-endswith
   name: nameservers-endswith
   entry: nameservers-endswith-hook
